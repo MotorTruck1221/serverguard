@@ -1,0 +1,43 @@
+version: "3"
+services:
+  postgres:
+    restart: unless-stopped
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: cybermonay
+      POSTGRES_PASSWORD: cybermonay
+      POSTGRES_DB: cybermonay
+    volumes:
+      - ./postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cybermonay"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  cybermonay:
+    image: cybermonay:latest
+    build:
+      context: .
+    depends_on:
+      postgres:
+        condition: service_healthy
+    container_name: cybermonay
+    restart: unless-stopped
+    ports:
+      - 3113:3113
+    environment:
+      DISCORD_TOKEN: ""
+      APPLICATION_ID: ""
+      CLIENT_ID: ""
+      CLIENT_SECRET: ""
+      REDIRECT_URI: ""
+      DB_USER: ""
+      DB_HOST: ""
+      DB_PASSWORD: ""
+      DB_PORT: ""
+      SALT: ""
+      ROLE_ID: ""
+      ALT_ROLE_ID: ""
+      GUILD_ID: ""
+      MUTED_ROLE_ID: ""
+      WEBHOOK_URL: ""
